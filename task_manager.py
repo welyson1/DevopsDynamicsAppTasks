@@ -1,4 +1,3 @@
-### Welyson que fez
 import tkinter as tk
 from tkinter import simpledialog, messagebox
 import json
