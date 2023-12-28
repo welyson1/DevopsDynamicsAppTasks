@@ -22,11 +22,12 @@ class TaskManager:
         self.remove_button = tk.Button(self.master, text="Remover Tarefa", command=self.remove_task)
         self.remove_button.pack(pady=5)
 
+        self.master.protocol("WM_DELETE_WINDOW", self.on_close)
+
     def add_task(self):
         task_name = simpledialog.askstring("Adicionar Tarefa", "Digite o nome da tarefa:")
         if task_name:
-            self.tasks.append({"name": task_name})            
-            self.save_tasks_to_json()
+            self.tasks.append({"name": task_name})
             self.refresh_task_listbox()
 
     def remove_task(self):
@@ -52,6 +53,11 @@ class TaskManager:
                 self.tasks = json.load(json_file)
         except FileNotFoundError:
             pass
+
+    def on_close(self):
+        if messagebox.askokcancel("Fechar", "Deseja realmente fechar o aplicativo?"):
+            self.save_tasks_to_json()
+            self.master.destroy()
 
 if __name__ == "__main__":
     root = tk.Tk()

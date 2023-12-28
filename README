@@ -69,13 +69,13 @@ if __name__ == "__main__":
 ```
 
 ### Tarefa 1
-Primeira correção! O cliente disse para o PO que é muito chato ter que confirmar se realmente quero sair do Software quando clico no X.
+Primeira correção! O cliente disse para o PO que é muito chato ter que confirmar se realmente quer sair do Software quando clica no X.
 Então... Dev Front
 Remova toda a função def `on_close(self):` do código base.
 Remova a linha de código `self.master.protocol("WM_DELETE_WINDOW", self.on_close)`
 
 ### Tarefa 2
-Doc, a encarregada da documentação, recebeu a incumbência de revisar e atualizar a documentação da aplicação antes da implementação. Ao revisar o material existente, ela notou uma seção que descrevia detalhadamente a caixa de diálogo de fechamento, mas, ao ouvir do Dev Front: "Amigoo, eu só removi uma caixa de diálogo haha, tarefa mais fácil da minha vida haha", ela decidiu simplificar e remover essa parte da documentação.
+Doc, a encarregada da documentação, recebeu a tarefa de revisar e atualizar a documentação da aplicação depois da implementação. Ao revisar o material existente, ela notou uma seção que descrevia detalhadamente a caixa de diálogo de fechamento, mas, ao ouvir do Dev Front: "Amigoo, eu só removi uma caixa de diálogo haha, tarefa mais fácil da minha vida haha", ela decidiu simplificar e remover essa parte da documentação.
 
 No arquivo `Doc.md` remova o bloco de texto que fala sobre a função de fechamento
 
