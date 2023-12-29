@@ -14,7 +14,7 @@ class TaskManagerBackend:
         except FileNotFoundError:
             tasks = []
         return tasks
-
+    
     def save_tasks(self):
         with open(self.data_file, "w") as file:
             json.dump(self.tasks, file, indent=2)
@@ -28,3 +28,11 @@ class TaskManagerBackend:
         if 0 <= index < len(self.tasks):
             self.tasks[index]["completed"] = True
             self.save_tasks()
+
+    def add_task(self, task):
+        if task.strip():  # Verifica se a tarefa não está vazia após remover espaços em branco
+            self.tasks.append({"task": task, "completed": False})
+            self.save_tasks()
+            return True
+        else:
+            return False
