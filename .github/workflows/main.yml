@@ -56,37 +56,43 @@ jobs:
   
   generate-docs:
     runs-on: ubuntu-latest
-
+  
     needs: approve
-
+  
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
+  
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
-
+  
       - name: Install pdoc3
         run: pip install pdoc3
-
+  
       - name: Generate GUI Documentation
         run: pdoc3 --html -o docs task_manager_gui.py
-
+  
       - name: Generate Backend Documentation
         run: pdoc3 --html -o docs task_manager_backend.py
-
+  
       - name: Set up Git
         run: |
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
-      
-      - name: Set up Git remote with token
-        run: git remote add origin_with_token https://$GH_TOKEN@github.com/$GITHUB_REPOSITORY.git
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+  
+      - name: Check if Remote Already Exists
+        run: |
+          if ! git remote | grep -q "origin_with_token"; then
+            git remote add origin_with_token https://$GH_TOKEN@github.com/$GITHUB_REPOSITORY.git
+          fi
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      
+  
+      - name: Clear Git Cache
+        run: git gc --prune=all
+  
       - name: Commit and Push Documentation
         run: |
           git add docs
@@ -94,6 +100,7 @@ jobs:
           git push origin_with_token HEAD:${GITHUB_REF}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
 
   deploy:
     runs-on: ubuntu-latest
