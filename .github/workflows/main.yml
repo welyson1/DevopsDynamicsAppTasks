@@ -68,13 +68,6 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: Set Git Config with Token
-        run: |
-          git remote rm origin
-          git remote add origin https://$GH_TOKEN@github.com/$GITHUB_REPOSITORY.git
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
       - name: Install pdoc3
         run: pip install pdoc3
 
@@ -84,18 +77,23 @@ jobs:
       - name: Generate Backend Documentation
         run: pdoc3 --html -o docs task_manager_backend.py
 
+      - name: Set up Git
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+      
+      - name: Set up Git remote with token
+        run: git remote add origin_with_token https://$GH_TOKEN@github.com/$GITHUB_REPOSITORY.git
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      
       - name: Commit and Push Documentation
         run: |
-          git config --local user.email "monitoriawel@hotmail.com"
-          git config --local user.name "welyson1"
           git add docs
-          git commit -m "Update documentation" || true
-          git remote add origin_with_token https://$GH_TOKEN@github.com/$GITHUB_REPOSITORY.git
+          git commit -m "Update documentation"
           git push origin_with_token HEAD:${GITHUB_REF}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
-
 
   deploy:
     runs-on: ubuntu-latest
