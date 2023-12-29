@@ -1,70 +1,118 @@
-name: Automated Pipeline
+name: CI/CD
 
 on:
   pull_request:
     branches:
       - Dev
+  push:
+    branches:
+      - Test
 
 jobs:
-  build_and_test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Wait for Approval Comment
-        id: wait-for-approval
-        uses: actions/github-script@v7
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          script: |
-            const issue_number = context.payload.pull_request.number;
-            const repo = context.repo.repo;
-            const owner = context.repo.owner;
-            
-            async function checkForApproval() {
-              const { data: comments } = await github.issues.listComments({
-                owner,
-                repo,
-                issue_number,
-              });
+          python-version: 3.8
 
-              const approvalComment = comments.find(comment => comment.body.includes('@revisor-aprova'));
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-              if (approvalComment) {
-                console.log('Approval comment found!');
-                return 'approved';
-              } else {
-                console.log('Waiting for approval comment...');
-                return 'pending';
-              }
-            }
+  test:
+    runs-on: ubuntu-latest
 
-            return checkForApproval();
+    needs: build
 
-      - name: Generate Documentation
-        if: steps.wait-for-approval.outputs.result == 'approved'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: python -m unittest discover
+
+  approve:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Add 'approved' label
         run: |
-          # Lógica para gerar a documentação usando pdoc3
-          # Exemplo: pip install pdoc3 && pdoc --output-dir docs --force your_module
+          echo "label: approved" >> $GITHUB_EVENT_PATH
+  
+  generate-docs:
+    runs-on: ubuntu-latest
 
-      - name: Wait for Test Script
-        id: wait-for-test-script
-        uses: actions/github-script@v7
+    needs: approve
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          script: |
-            const fs = require('fs');
-            const path = 'test_script.py';
+          python-version: 3.8
 
-            async function checkForTestScript() {
-              if (fs.existsSync(path)) {
-                console.log('Test script found!');
-                return 'found';
-              } else {
-                console.log('Waiting for test script...');
-                return 'pending';
-              }
-            }
+      - name: Install pdoc3
+        run: pip install pdoc3
 
-            return checkForTestScript();
+      - name: Generate documentation
+        run: pdoc3 --html -o docs task_manager.py
 
+  deploy:
+    runs-on: ubuntu-latest
+
+    needs: approve
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Copy code to Prod branch
+        run: git checkout Prod && git merge Test
+
+  build-artifact:
+    runs-on: ubuntu-latest
+
+    needs: deploy
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install pyinstaller
+        run: pip install pyinstaller
+
+      - name: Build artifact
+        run: pyinstaller --onefile task_manager.py
