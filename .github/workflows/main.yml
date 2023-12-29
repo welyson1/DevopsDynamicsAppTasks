@@ -77,12 +77,7 @@ jobs:
 
     permissions:
       contents: read
-      issues: write
-      packages: write
-      deployments: write
-      pull-requests: write
-      checks: write
-    
+
     needs: 
       - approve-dev
       - approve-test
