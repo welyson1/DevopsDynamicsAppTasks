@@ -1,34 +1,42 @@
+# test_task_manager.py
+
 import unittest
-from unittest.mock import patch, Mock
 import os
+from task_manager_backend import TaskManagerBackend
 
-from tkinter import Tk
-from task_manager import TaskManager  # Substitua 'your_main_script' pelo nome do seu script principal
-
-class TestTaskManager(unittest.TestCase):
+class TestTaskManagerBackend(unittest.TestCase):
     def setUp(self):
-        self.root = Tk()
-        self.app = TaskManager(self.root)
+        # Cria um arquivo de dados de teste exclusivo para cada teste
+        self.test_data_file = f"test_tasks_{self._testMethodName}.json"
+        self.backend = TaskManagerBackend(data_file=self.test_data_file)
 
     def tearDown(self):
-        self.root.destroy()
+        # Limpar o estado após cada teste
+        self.backend = None
 
-    @patch('task_manager.simpledialog.askstring', return_value="Test Task")
-    def test_add_task(self, mock_askstring):
-        # Verifica se o arquivo 'tasks.json' não existe inicialmente
-        self.assertFalse(os.path.exists("tasks.json"))
+        # Remover o arquivo de dados de teste
+        if os.path.exists(self.test_data_file):
+            os.remove(self.test_data_file)
 
-        # Chama a função add_task
-        self.app.add_task()
+    def test_add_task(self):
+        self.backend.add_task("Test Task 1")
+        self.assertEqual(len(self.backend.tasks), 1)
 
-        # Verifica se o arquivo 'tasks.json' foi criado após a chamada da função add_task
-        self.assertTrue(os.path.exists("tasks.json"))
+    def test_add_empty_task(self):
+        initial_tasks_count = len(self.backend.tasks)
+        self.backend.add_task("")
+        self.assertEqual(len(self.backend.tasks), initial_tasks_count)  # Deve manter a lista inalterada
 
-        # Carrega as tarefas do arquivo 'tasks.json'
-        self.app.load_tasks_from_json()
+    def test_remove_task(self):
+        self.backend.add_task("Test Task 2")
+        self.assertEqual(len(self.backend.tasks), 1)
+        self.backend.remove_task(0)
+        self.assertEqual(len(self.backend.tasks), 0)
 
-        # Verifica se a tarefa adicionada está presente na lista de tarefas
-        self.assertIn({"name": "Test Task"}, self.app.tasks)
+    def test_mark_task_completed(self):
+        self.backend.add_task("Test Task 3")
+        self.backend.mark_task_completed(0)
+        self.assertTrue(self.backend.tasks[0]["completed"])
 
 if __name__ == "__main__":
     unittest.main()

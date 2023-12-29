@@ -71,8 +71,19 @@ jobs:
       - name: Install pdoc3
         run: pip install pdoc3
 
-      - name: Generate documentation
-        run: pdoc3 --html -o docs task_manager.py
+      - name: Generate GUI Documentation
+        run: pdoc3 --html -o docs task_manager_gui.py
+
+      - name: Generate Backend Documentation
+        run: pdoc3 --html -o docs task_manager_backend.py
+
+      - name: Commit and Push Documentation
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs
+          git commit -m "Update documentation" || true
+          git push
 
   deploy:
     runs-on: ubuntu-latest
@@ -109,4 +120,4 @@ jobs:
         run: pip install pyinstaller
 
       - name: Build artifact
-        run: pyinstaller --onefile task_manager.py
+        run: pyinstaller --onefile task_manager_gui.py
