@@ -68,6 +68,13 @@ jobs:
         with:
           python-version: 3.8
 
+      - name: Set Git Config with Token
+        run: |
+          git remote rm origin
+          git remote add origin https://$GH_TOKEN@github.com/$GITHUB_REPOSITORY.git
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
       - name: Install pdoc3
         run: pip install pdoc3
 
@@ -87,6 +94,7 @@ jobs:
           git push origin_with_token HEAD:${GITHUB_REF}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
 
 
   deploy:
