@@ -83,7 +83,11 @@ jobs:
           git config --local user.name "GitHub Action"
           git add docs
           git commit -m "Update documentation" || true
-          git push
+          git remote add origin_with_token https://$GH_TOKEN@github.com/$GITHUB_REPOSITORY.git
+          git push origin_with_token HEAD:${GITHUB_REF}
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
 
   deploy:
     runs-on: ubuntu-latest
