@@ -53,23 +53,35 @@ jobs:
       - name: Add 'approved' label
         run: |
           echo "label: approved" >> $GITHUB_EVENT_PATH
- 
+  
   deploy:
-    runs-on: ubuntu-latest
-
-    needs: approve
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-
-      - name: Copy code to Prod branch
-        run: git checkout Prod && git merge Test
+      runs-on: ubuntu-latest
+    
+      needs: approve
+    
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
+    
+        - name: Set up Python
+          uses: actions/setup-python@v2
+          with:
+            python-version: 3.8
+    
+        - name: Debug Git Status Before Merge
+          run: |
+            git status
+            git branch
+    
+        - name: Copy code to Prod branch
+          run: |
+            git fetch origin  # Certifica-se de ter a última versão do repositório
+            git checkout Prod && git merge --no-ff Test
+    
+        - name: Debug Git Status After Merge
+          run: |
+            git status
+            git branch
 
   build-artifact:
     runs-on: ubuntu-latest
