@@ -30,9 +30,5 @@ class TaskManagerBackend:
             self.save_tasks()
 
     def add_task(self, task):
-        if task.strip():  # Verifica se a tarefa não está vazia após remover espaços em branco
-            self.tasks.append({"task": task, "completed": False})
-            self.save_tasks()
-            return True
-        else:
-            return False
+        self.tasks.append({"task": task, "completed": False})
+        self.save_tasks()
