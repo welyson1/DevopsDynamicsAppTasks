@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      # Defina a saída 'upload_url' para ser utilizada por outros jobs
+      # Define a saída 'upload_url' para ser utilizada por outros jobs
       id: build
       set: ${{ steps.upload.outputs }}
 
@@ -52,9 +52,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Add 'approved-dev' label
-        run: echo "label: approved-dev" >> $GITHUB_EVENT_PATH
-
   approve-test:
     runs-on: ubuntu-latest
     needs: test
@@ -62,8 +59,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Add 'approved-test' label
-        run: echo "label: approved-test" >> $GITHUB_EVENT_PATH
 
   build-artifact:
     runs-on: ubuntu-latest
