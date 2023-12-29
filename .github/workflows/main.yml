@@ -98,7 +98,7 @@ jobs:
         run: |
           git add docs
           git commit -m "Update documentation"
-          git push origin_with_token HEAD:${REF}
+          git push origin_with_token HEAD:${GITHUB_REF}
         env:
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
