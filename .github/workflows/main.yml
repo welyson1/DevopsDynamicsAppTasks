@@ -52,7 +52,7 @@ jobs:
 
       - name: Add 'approved' label
         run: |
-          echo "label: approved" >> $EVENT_PATH
+          echo "label: approved" >> $GITHUB_EVENT_PATH
 
   generate-docs:
     runs-on: ubuntu-latest
