@@ -85,11 +85,11 @@ jobs:
       - name: Check if Remote Already Exists
         run: |
           if ! git remote | grep -q "origin_with_token"; then
-            git remote add origin_with_token https://$USERNAME:$PASSWORD@github.com/$GITHUB_REPOSITORY.git
+            git remote add origin_with_token https://github.com/welyson1/DevopsDynamicsAppTasks.git
           fi
         env:
-          USERNAME: ${{ secrets.GITHUB_USERNAME }}
-          PASSWORD: ${{ secrets.GITHUB_PASSWORD }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
 
       - name: Clear Git Cache
         run: git gc --prune=all
