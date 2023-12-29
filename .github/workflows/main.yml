@@ -68,6 +68,11 @@ jobs:
         with:
           python-version: 3.8
   
+      - name: Configure Git Identity
+        run: |
+          git config --local user.email "monitoriawel@hotmail.com"
+          git config --local user.name "welyson1"
+  
       - name: Debug Git Status Before Merge
         run: |
           git status
