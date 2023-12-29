@@ -73,15 +73,16 @@ jobs:
           git config --local user.email "monitoriawel@hotmail.com"
           git config --local user.name "welyson1"
   
-      - name: Debug Git Status Before Merge
+      - name: Debug Git Remote Branches
         run: |
-          git status
-          git branch
+          git fetch origin
+          git branch -r
   
       - name: Copy code to Prod branch
         run: |
-          git fetch origin
-          git checkout Prod && git merge --no-ff --allow-unrelated-histories Test
+          git checkout Prod
+          git pull origin Prod
+          git merge --no-ff --allow-unrelated-histories origin/Test
   
       - name: Debug Git Status After Merge
         run: |
