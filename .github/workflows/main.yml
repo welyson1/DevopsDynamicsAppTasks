@@ -78,6 +78,13 @@ jobs:
     needs: 
       - approve-dev
       - approve-test
+      
+    permissions:
+      contents: read
+      issues: write
+      packages: write
+      deployments: write
+      pull-requests: write
 
     steps:
       - name: Checkout code
