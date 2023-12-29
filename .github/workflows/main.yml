@@ -88,9 +88,9 @@ jobs:
             git remote add origin_with_token https://$USERNAME:$PASSWORD@github.com/$GITHUB_REPOSITORY.git
           fi
         env:
-          USERNAME: ${{ secrets.USERNAME }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-  
+          USERNAME: ${{ secrets.GITHUB_USERNAME }}
+          PASSWORD: ${{ secrets.GITHUB_PASSWORD }}
+
       - name: Clear Git Cache
         run: git gc --prune=all
   
@@ -100,8 +100,8 @@ jobs:
           git commit -m "Update documentation"
           git push origin_with_token HEAD:${GITHUB_REF}
         env:
-          USERNAME: ${{ secrets.USERNAME }}
-          PASSWORD: ${{ secrets.PASSWORD }}
+          USERNAME: ${{ secrets.GITHUB_USERNAME }}
+          PASSWORD: ${{ secrets.GITHUB_PASSWORD }}
  
   deploy:
     runs-on: ubuntu-latest
