@@ -94,7 +94,7 @@ jobs:
         run: pip install pyinstaller
 
       - name: Build artifact
-        run: pyinstaller --onefile task_manager_gui.py --name task_manager_gui.exe
+        run: pyinstaller --onefile task_manager_gui.py
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
